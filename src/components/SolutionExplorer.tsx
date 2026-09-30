@@ -1,6 +1,5 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { SolutionId, SolutionPreviews } from "../i18n/types";
-import { boxGeometry, logoBoxes, markBounds } from "../data/logo";
 
 interface SolutionItem {
   id: SolutionId;
@@ -14,36 +13,11 @@ interface SolutionExplorerProps {
   items: SolutionItem[];
   previews: SolutionPreviews;
   glyphs: { plus: string; minus: string; check: string; mapPin: string; chat: string };
+  appIcon: string;
 }
 
 function Glyph({ svg, className = "" }: { svg: string; className?: string }) {
   return <span className={`icon ${className}`} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
-}
-
-function MiniMark() {
-  return (
-    <svg viewBox={`${markBounds.x} ${markBounds.y} ${markBounds.width} ${markBounds.height}`} aria-hidden="true">
-      {logoBoxes.filter((box) => box.id === "top" || box.id === "left" || box.id === "right").map((box) => {
-        const geometry = boxGeometry(box);
-        const stroke = box.tone === "teal" ? "var(--logo-teal)" : "var(--logo-navy)";
-        if (box.frameOnly) {
-          return (
-            <g key={box.id} fill="none" strokeWidth={40} strokeLinejoin="round" strokeLinecap="round">
-              <polyline points={geometry.frameLeft} stroke="var(--logo-teal)" />
-              <polyline points={geometry.frameRight} stroke="var(--logo-navy)" />
-            </g>
-          );
-        }
-        return (
-          <g key={box.id} fill="none" stroke={stroke} strokeWidth={40} strokeLinejoin="round" strokeLinecap="round">
-            <polygon points={geometry.silhouette} fill={box.solid ? "var(--logo-fill)" : "none"} />
-            <polyline points={geometry.inner} />
-            <polyline points={geometry.spine} />
-          </g>
-        );
-      })}
-    </svg>
-  );
 }
 
 function slugify(value: string) {
@@ -315,7 +289,7 @@ function InventoryPreview({ copy, glyphs }: { copy: SolutionPreviews["inventory"
   );
 }
 
-function PwaPreview({ copy, glyphs }: { copy: SolutionPreviews["pwa"]; glyphs: SolutionExplorerProps["glyphs"] }) {
+function PwaPreview({ copy, glyphs, appIcon }: { copy: SolutionPreviews["pwa"]; glyphs: SolutionExplorerProps["glyphs"]; appIcon: string }) {
   const [installed, setInstalled] = useState(false);
   return (
     <div className="pwa">
@@ -324,7 +298,7 @@ function PwaPreview({ copy, glyphs }: { copy: SolutionPreviews["pwa"]; glyphs: S
           <span className={`app-slot${installed ? " is-installed" : ""}`}>
             {installed && (
               <span className="app-icon">
-                <MiniMark />
+                <img src={appIcon} alt="" width="64" height="61" />
               </span>
             )}
             {installed && <span className="app-name">{copy.appName}</span>}
@@ -355,7 +329,7 @@ function PwaPreview({ copy, glyphs }: { copy: SolutionPreviews["pwa"]; glyphs: S
   );
 }
 
-export default function SolutionExplorer({ tabsLabel, items, previews, glyphs }: SolutionExplorerProps) {
+export default function SolutionExplorer({ tabsLabel, items, previews, glyphs, appIcon }: SolutionExplorerProps) {
   const [active, setActive] = useState<SolutionId>(items[0].id);
   const listRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLSpanElement>(null);
@@ -428,7 +402,7 @@ export default function SolutionExplorer({ tabsLabel, items, previews, glyphs }:
             {active === "appointments" && <AppointmentsPreview copy={previews.appointments} glyphs={glyphs} />}
             {active === "orders" && <OrdersPreview copy={previews.orders} glyphs={glyphs} />}
             {active === "inventory" && <InventoryPreview copy={previews.inventory} glyphs={glyphs} />}
-            {active === "pwa" && <PwaPreview copy={previews.pwa} glyphs={glyphs} />}
+            {active === "pwa" && <PwaPreview copy={previews.pwa} glyphs={glyphs} appIcon={appIcon} />}
           </div>
         </div>
       </div>
@@ -970,8 +944,9 @@ const explorerStyles = `
   animation: install 520ms var(--ease-out) both;
 }
 
-.explorer .app-icon svg {
-  width: 74%;
+.explorer .app-icon img {
+  width: 76%;
+  height: auto;
 }
 
 .explorer .app-name {

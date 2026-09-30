@@ -2,6 +2,8 @@
 import type { SiteContent } from "../i18n/types";
 import SolutionExplorer from "./SolutionExplorer";
 import { icons } from "../icons";
+import { getImage } from "astro:assets";
+import brandMark from "../assets/brand/mark.png";
 
 interface Props {
   content: SiteContent;
@@ -10,6 +12,7 @@ interface Props {
 const { content } = Astro.props;
 const { solutions } = content;
 const items = solutions.items.map((item) => ({ ...item, icon: icons[item.icon] }));
+const appIcon = await getImage({ src: brandMark, width: 128, format: "png" });
 const glyphs = {
   plus: icons.plus,
   minus: icons.minus,
@@ -25,7 +28,7 @@ const glyphs = {
       <h2 class="section-title">{solutions.title}</h2>
       <p class="section-lead">{solutions.lead}</p>
     </header>
-    <SolutionExplorer client:visible tabsLabel={solutions.tabsLabel} items={items} previews={solutions.previews} glyphs={glyphs} />
+    <SolutionExplorer client:visible tabsLabel={solutions.tabsLabel} items={items} previews={solutions.previews} glyphs={glyphs} appIcon={appIcon.src} />
   </div>
 </section>
 

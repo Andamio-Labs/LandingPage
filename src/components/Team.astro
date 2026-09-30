@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import type { SiteContent } from "../i18n/types";
 import { team } from "../data/team";
 import Icon from "./Icon.astro";
-import LogoMark from "./LogoMark.astro";
+import brandMark from "../assets/brand/mark.png";
 
 interface Props {
   content: SiteContent;
@@ -37,7 +37,7 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
             <article class="badge" data-badge>
               <div class="badge-top">
                 <span class="badge-org">{content.team.badgeOrg}</span>
-                <LogoMark class="badge-mark" strokeWidth={40} simple />
+                <Image src={brandMark} alt="" width={48} height={46} format="png" class="badge-mark" />
               </div>
               <div class="photo">
                 {member.photo ? (
@@ -227,6 +227,8 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
 
   .badge :global(.badge-mark) {
     width: 1.5rem;
+    height: auto;
+    pointer-events: none;
   }
 
   .photo {
@@ -357,7 +359,7 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
       return {
         hanger,
         badge,
-        angle: new Spring(0, { response: 1.05, damping: 0.14 }),
+        angle: new Spring(0, { response: 0.95, damping: 0.38 }),
         drop: new Spring(0, { response: 0.7, damping: 0.55 }),
         dragging: false,
         moved: false,
@@ -404,7 +406,7 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
       const pivotX = rigRect.left + state.hanger.offsetLeft + state.hanger.offsetWidth / 2;
       const pivotY = rigRect.top + state.hanger.offsetTop;
       const raw = (Math.atan2(event.clientX - pivotX, Math.max(event.clientY - pivotY, 40)) * 180) / Math.PI;
-      const limit = 55;
+      const limit = 28;
       if (Math.abs(raw) <= limit) return -raw;
       const overshoot = Math.abs(raw) - limit;
       return -Math.sign(raw) * (limit + rubberband(overshoot, 90, 0.55));
@@ -438,7 +440,7 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
           return;
         }
         if (!reduced && event.pointerType === "mouse" && !state.dragging) {
-          state.angle.velocity += event.movementX * -0.9;
+          state.angle.velocity += event.movementX * -0.25;
           start();
         }
       });
@@ -487,7 +489,7 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
             state.hanger.style.transition = "opacity 260ms ease";
             state.hanger.style.opacity = "1";
             state.drop.target = 0;
-            state.angle.velocity = (state.index % 2 === 0 ? 1 : -1) * 90;
+            state.angle.velocity = (state.index % 2 === 0 ? 1 : -1) * 30;
             start();
           }, state.index * 120);
         });

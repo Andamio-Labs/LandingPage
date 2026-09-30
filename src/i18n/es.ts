@@ -179,7 +179,7 @@ export const es: SiteContent = {
   },
   team: {
     title: "Equipo",
-    lead: "Tres programadores en Colombia. Trabajamos 100 % remoto con negocios de toda Latinoamérica.",
+    lead: "Tres programadores en Colombia. Trabajamos de manera remota con tu negocio.",
     dragHint: "Jala las tarjetas",
     badgeOrg: "andamio labs",
     portfolio: "Portafolio",
@@ -211,7 +211,7 @@ export const es: SiteContent = {
   },
   contact: {
     title: "Hablemos.",
-    lead: "Cuéntanos de tu negocio. Te respondemos nosotros mismos, en horario de oficina.",
+    lead: "Cuéntanos de tu negocio. Te respondemos nosotros mismos.",
     whatsappMessage: "Hola, Andamio Labs. Quiero contarles sobre mi negocio.",
     whatsappCta: "Escribir por WhatsApp",
     copyEmail: "Copiar correo",
@@ -219,7 +219,7 @@ export const es: SiteContent = {
     emailLabel: "Correo",
     whatsappLabel: "WhatsApp",
     hoursLabel: "Horario",
-    hoursValue: "Lunes a viernes, 8 a.m. a 6 p.m. (hora de Colombia, UTC-5)",
+    hoursValue: "Lunes a viernes, 6 a.m. a 10 p.m. (hora de Colombia, UTC-5)",
   },
   footer: {
     tagline: "Software a la medida.",

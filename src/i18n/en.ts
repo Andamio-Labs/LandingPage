@@ -179,7 +179,7 @@ export const en: SiteContent = {
   },
   team: {
     title: "Team",
-    lead: "Three developers in Colombia. We work fully remote with businesses across Latin America.",
+    lead: "Three developers in Colombia. We work remotely with your business.",
     dragHint: "Pull the cards",
     badgeOrg: "andamio labs",
     portfolio: "Portfolio",
@@ -211,7 +211,7 @@ export const en: SiteContent = {
   },
   contact: {
     title: "Let's talk.",
-    lead: "Tell us about your business. We reply ourselves, during office hours.",
+    lead: "Tell us about your business. We reply ourselves.",
     whatsappMessage: "Hi, Andamio Labs. I'd like to tell you about my business.",
     whatsappCta: "Message on WhatsApp",
     copyEmail: "Copy email",
@@ -219,7 +219,7 @@ export const en: SiteContent = {
     emailLabel: "Email",
     whatsappLabel: "WhatsApp",
     hoursLabel: "Hours",
-    hoursValue: "Monday to Friday, 8 a.m. to 6 p.m. (Colombia time, UTC-5)",
+    hoursValue: "Monday to Friday, 6 a.m. to 10 p.m. (Colombia time, UTC-5)",
   },
   footer: {
     tagline: "Custom software.",

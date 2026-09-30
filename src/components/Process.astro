@@ -45,11 +45,12 @@ const { process } = content;
   }
 
   .rail {
+    display: none;
     position: absolute;
     left: 1.5rem;
+    right: calc((100% - 6rem) / 5 - 1.5rem);
     top: 1.5rem;
-    bottom: 1.5rem;
-    width: 1px;
+    height: 1px;
     background-color: var(--color-line);
   }
 
@@ -57,7 +58,7 @@ const { process } = content;
     position: absolute;
     inset: 0;
     background-color: var(--color-accent);
-    transform-origin: top;
+    transform-origin: left;
   }
 
   .steps {
@@ -74,6 +75,23 @@ const { process } = content;
     grid-template-columns: 3rem 1fr;
     column-gap: 1.25rem;
     align-items: start;
+    view-timeline-name: --step;
+  }
+
+  .step:not(:last-child)::before,
+  .step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 1.5rem;
+    top: 3rem;
+    bottom: -2.5rem;
+    width: 1px;
+    background-color: var(--color-line);
+  }
+
+  .step:not(:last-child)::after {
+    background-color: var(--color-accent);
+    transform-origin: top;
   }
 
   .dot {
@@ -106,10 +124,16 @@ const { process } = content;
   }
 
   @supports (animation-timeline: view()) {
-    .rail-fill {
+    .step:not(:last-child)::after {
       animation: fill-vertical linear both;
+      animation-timeline: --step;
+      animation-range: entry 70% cover 60%;
+    }
+
+    .rail-fill {
+      animation: fill-horizontal linear both;
       animation-timeline: view();
-      animation-range: entry 60% cover 70%;
+      animation-range: entry 90% cover 60%;
     }
 
     .dot {
@@ -172,23 +196,12 @@ const { process } = content;
 
   @media (min-width: 60rem) {
     .rail {
-      left: 1.5rem;
-      right: 1.5rem;
-      top: 1.5rem;
-      bottom: auto;
-      width: auto;
-      height: 1px;
+      display: block;
     }
 
-    .rail-fill {
-      transform-origin: left;
-    }
-
-    @supports (animation-timeline: view()) {
-      .rail-fill {
-        animation-name: fill-horizontal;
-        animation-range: entry 90% cover 60%;
-      }
+    .step:not(:last-child)::before,
+    .step:not(:last-child)::after {
+      display: none;
     }
 
     .steps {
@@ -212,6 +225,7 @@ const { process } = content;
 
   @media (prefers-reduced-motion: reduce) {
     .rail-fill,
+    .step::after,
     .dot,
     .step-title,
     .step-text {

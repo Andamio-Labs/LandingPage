@@ -1,5 +1,7 @@
 ---
-import LogoMark from "./LogoMark.astro";
+import { Image } from "astro:assets";
+import mark from "../assets/brand/mark.png";
+import markLight from "../assets/brand/mark-light.png";
 
 interface Props {
   class?: string;
@@ -9,7 +11,10 @@ const { class: className = "" } = Astro.props;
 ---
 
 <span class={`logo ${className}`}>
-  <LogoMark class="mark" strokeWidth={36} simple />
+  <span class="mark" aria-hidden="true">
+    <Image src={markLight} alt="" width={68} height={65} format="png" class="mark-on-dark" loading="eager" />
+    <Image src={mark} alt="" width={68} height={65} format="png" class="mark-on-light" loading="eager" />
+  </span>
   <span class="word">Andamio Labs</span>
 </span>
 
@@ -22,9 +27,28 @@ const { class: className = "" } = Astro.props;
     white-space: nowrap;
   }
 
-  .logo :global(.mark) {
-    width: 2.1rem;
+  .mark {
+    display: grid;
+    width: 2.15rem;
     flex-shrink: 0;
+  }
+
+  .mark :global(img) {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: auto;
+  }
+
+  .mark :global(.mark-on-light) {
+    display: none;
+  }
+
+  :global([data-theme="light"]) .mark :global(.mark-on-light) {
+    display: block;
+  }
+
+  :global([data-theme="light"]) .mark :global(.mark-on-dark) {
+    display: none;
   }
 
   .word {
