@@ -1,0 +1,75 @@
+---
+interface Props {
+  variant: "teal" | "navy" | "filled";
+}
+
+const { variant } = Astro.props;
+---
+
+<svg class={`iso-cube is-${variant}`} viewBox="-2 -2 104 120" aria-hidden="true" focusable="false">
+  <polygon class="face face-top" points="50,0 100,29 50,58 0,29"></polygon>
+  <polygon class="face face-left" points="0,29 50,58 50,116 0,87"></polygon>
+  <polygon class="face face-right" points="100,29 50,58 50,116 100,87"></polygon>
+  {
+    variant === "filled" && (
+      <g class="code">
+        <text transform="matrix(0.865 0.502 -0.865 0.502 50 29)" text-anchor="middle" dominant-baseline="central">
+          0 1
+        </text>
+        <text transform="matrix(0.865 0.502 0 1 25 72)" text-anchor="middle" dominant-baseline="central">
+          {"{ }"}
+        </text>
+        <text transform="matrix(0.865 -0.502 0 1 75 72)" text-anchor="middle" dominant-baseline="central">
+          {"</>"}
+        </text>
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .iso-cube {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    display: block;
+  }
+
+  .face {
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .is-teal .face {
+    stroke: var(--c-cube-line);
+    fill: color-mix(in srgb, var(--c-cube-line) 7%, transparent);
+  }
+
+  .is-navy .face {
+    stroke: var(--c-cube-navy);
+    fill: color-mix(in srgb, var(--c-cube-navy) 9%, transparent);
+  }
+
+  .is-filled .face-top {
+    fill: var(--c-cube-top);
+    stroke: var(--c-cube-top);
+  }
+
+  .is-filled .face-left {
+    fill: var(--c-cube-left);
+    stroke: var(--c-cube-left);
+  }
+
+  .is-filled .face-right {
+    fill: var(--c-cube-right);
+    stroke: var(--c-cube-right);
+  }
+
+  .code text {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--c-cube-code);
+  }
+</style>

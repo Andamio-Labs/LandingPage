@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import type { SiteContent } from "../i18n/types";
+import { contact } from "../data/contact";
 
 interface Props {
   content: SiteContent;
@@ -8,7 +9,7 @@ interface Props {
 }
 
 const { content, canonicalPath } = Astro.props;
-const siteUrl = "https://andamio-labs.pages.dev";
+const siteUrl = contact.siteUrl;
 const canonicalUrl = new URL(canonicalPath, siteUrl).toString();
 const ogImageUrl = new URL("/og-image.png", siteUrl).toString();
 const ogLocale = content.lang === "es" ? "es_CO" : "en_US";
@@ -20,6 +21,14 @@ const ogLocaleAlternate = content.lang === "es" ? "en_US" : "es_CO";
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (function () {
+        try {
+          if (localStorage.getItem("theme") === "light") document.documentElement.dataset.theme = "light";
+        } catch (error) {}
+      })();
+    </script>
+    <link rel="preload" href="/fonts/mona-sans-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="canonical" href={canonicalUrl} />
@@ -29,6 +38,7 @@ const ogLocaleAlternate = content.lang === "es" ? "en_US" : "es_CO";
     <meta name="description" content={content.meta.description} />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Andamio Labs" />
     <meta property="og:title" content={content.meta.title} />
     <meta property="og:description" content={content.meta.description} />
     <meta property="og:url" content={canonicalUrl} />
@@ -43,24 +53,11 @@ const ogLocaleAlternate = content.lang === "es" ? "en_US" : "es_CO";
     <meta name="twitter:description" content={content.meta.description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#151c23" />
+    <meta name="theme-color" content="#0e1316" />
 
     <link rel="alternate" hreflang="es" href={siteUrl + "/"} />
     <link rel="alternate" hreflang="en" href={siteUrl + "/en/"} />
     <link rel="alternate" hreflang="x-default" href={siteUrl + "/"} />
-
-    <script is:inline>
-      (function () {
-        var stored = null;
-        try {
-          stored = localStorage.getItem("theme");
-        } catch (error) {}
-        if (stored === "dark" || stored === "light") {
-          document.documentElement.dataset.theme = stored;
-        }
-      })();
-    </script>
   </head>
   <body>
     <a href="#main-content" class="skip-link">{content.skipLink}</a>
@@ -70,19 +67,21 @@ const ogLocaleAlternate = content.lang === "es" ? "en_US" : "es_CO";
 
 <style>
   .skip-link {
-    position: absolute;
-    top: -100%;
-    left: 1rem;
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
     z-index: 100;
-    padding: 0.75rem 1.25rem;
+    padding: 0.7rem 1.1rem;
+    border-radius: var(--radius-base);
     background-color: var(--color-accent);
     color: var(--color-accent-foreground);
-    border-radius: 0 0 0.5rem 0.5rem;
     font-weight: 600;
-    transition: top 0.2s ease;
+    text-decoration: none;
+    transform: translateY(-160%);
+    transition: transform var(--duration-ui) var(--ease-out);
   }
 
   .skip-link:focus {
-    top: 0;
+    transform: none;
   }
 </style>

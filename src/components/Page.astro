@@ -1,0 +1,38 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "./Header.astro";
+import Hero from "./Hero.astro";
+import Problem from "./Problem.astro";
+import Solutions from "./Solutions.astro";
+import Audiences from "./Audiences.astro";
+import Process from "./Process.astro";
+import Quote from "./Quote.astro";
+import Team from "./Team.astro";
+import Faq from "./Faq.astro";
+import Contact from "./Contact.astro";
+import Footer from "./Footer.astro";
+import type { SiteContent } from "../i18n/types";
+
+interface Props {
+  content: SiteContent;
+  canonicalPath: string;
+}
+
+const { content, canonicalPath } = Astro.props;
+---
+
+<Layout content={content} canonicalPath={canonicalPath}>
+  <Header content={content} />
+  <main id="main-content">
+    <Hero content={content} />
+    <Problem content={content} />
+    <Solutions content={content} />
+    <Audiences content={content} />
+    <Process content={content} />
+    <Quote content={content} />
+    <Team content={content} />
+    <Faq content={content} />
+    <Contact content={content} />
+  </main>
+  <Footer content={content} />
+</Layout>

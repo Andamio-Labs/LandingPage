@@ -1,135 +1,217 @@
 ---
 import type { SiteContent } from "../i18n/types";
 import { contact, whatsappHref } from "../data/contact";
+import Icon from "./Icon.astro";
 
 interface Props {
   content: SiteContent;
 }
 
 const { content } = Astro.props;
+const copy = content.contact;
+const whatsappLink = whatsappHref(copy.whatsappMessage);
 ---
 
-<section id="contact" class="contact">
-  <div class="inner">
-    <h2>{content.contact.title}</h2>
-    <p class="intro">{content.contact.intro}</p>
-
-    <div class="actions">
-      <a
-        class="whatsapp"
-        href={whatsappHref(content.contact.whatsappMessage)}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {content.contact.whatsappLabel}
-      </a>
-
-      <button type="button" class="email-copy" data-email={contact.email}>
-        <span class="email-text">{contact.email}</span>
-        <span class="copy-label">{content.contact.copyLabel}</span>
-      </button>
-      <p class="copy-status" role="status" aria-live="polite" data-copied-label={content.contact.copiedLabel}></p>
+<section id="contact" class="section contact">
+  <div class="shell grid">
+    <div class="intro">
+      <h2 class="title">{copy.title}</h2>
+      <p class="section-lead">{copy.lead}</p>
+      <div class="actions">
+        <a class="button is-primary" href={whatsappLink} target="_blank" rel="noopener noreferrer">
+          {copy.whatsappCta}
+          <span class="button-chip"><Icon name="whatsapp-logo" /></span>
+        </a>
+        <button type="button" class="button copy-button" data-copy-email={contact.email} data-copied={copy.copied}>
+          <span class="copy-label" data-copy-label>{copy.copyEmail}</span>
+          <span class="button-chip copy-chip">
+            <Icon name="copy" class="copy-icon" />
+            <Icon name="check" class="check-icon" />
+          </span>
+        </button>
+        <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+      </div>
     </div>
 
-    <p class="hours">{content.contact.hours}</p>
+    <dl class="rows">
+      <div class="row">
+        <dt class="mono-label">{copy.emailLabel}</dt>
+        <dd>
+          <a href={`mailto:${contact.email}`}>
+            <span>{contact.email}</span>
+            <Icon name="arrow-up-right" class="row-arrow" />
+          </a>
+        </dd>
+      </div>
+      <div class="row">
+        <dt class="mono-label">{copy.whatsappLabel}</dt>
+        <dd>
+          <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+            <span>{contact.whatsappDisplay}</span>
+            <Icon name="arrow-up-right" class="row-arrow" />
+          </a>
+        </dd>
+      </div>
+      <div class="row">
+        <dt class="mono-label">{copy.hoursLabel}</dt>
+        <dd class="static">{copy.hoursValue}</dd>
+      </div>
+    </dl>
   </div>
 </section>
 
 <style>
-  .contact {
-    padding: 4rem 1.25rem;
+  .grid {
+    display: grid;
+    gap: 3rem;
   }
 
-  .inner {
-    max-width: 40rem;
-    margin-inline: auto;
-    text-align: center;
-  }
-
-  h2 {
-    font-size: clamp(2rem, 5vw, 2.75rem);
-    margin: 0 0 1rem;
-  }
-
-  .intro {
-    color: var(--color-foreground-muted);
-    font-size: 1.05rem;
-    margin: 0 0 2.5rem;
+  .title {
+    margin: 0;
+    font-size: clamp(3rem, 1rem + 7vw, 7rem);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-weight: 800;
+    font-stretch: 108%;
   }
 
   .actions {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .whatsapp {
-    border-radius: 9999px;
-    background-color: var(--color-accent);
-    color: var(--color-accent-foreground);
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.9rem 2rem;
-    transition: background-color 0.15s ease;
-  }
-
-  .whatsapp:hover {
-    background-color: var(--color-accent-hover);
-  }
-
-  .email-copy {
-    display: inline-flex;
-    align-items: center;
+    flex-wrap: wrap;
     gap: 0.75rem;
-    border-radius: 9999px;
-    border: 1px solid var(--color-border);
-    background-color: transparent;
-    color: var(--color-foreground);
-    padding: 0.75rem 1.5rem;
-    font-size: 0.95rem;
-    font-family: var(--font-mono);
-    cursor: pointer;
-    transition: border-color 0.15s ease;
+    margin-top: 2rem;
   }
 
-  .email-copy:hover {
-    border-color: var(--color-accent);
+  .copy-chip {
+    position: relative;
   }
 
-  .copy-label {
-    font-family: var(--font-sans);
-    font-weight: 600;
-    color: var(--color-accent);
-    font-size: 0.85rem;
+  .copy-chip :global(.icon) {
+    position: absolute;
+    transition:
+      opacity var(--duration-ui) ease,
+      transform var(--duration-medium) var(--ease-out),
+      filter var(--duration-ui) ease;
   }
 
-  .copy-status {
-    min-height: 1.2rem;
-    margin: 0;
-    font-size: 0.85rem;
+  .copy-chip :global(.check-icon) {
+    opacity: 0;
+    transform: scale(0.6);
+    filter: blur(2px);
+  }
+
+  .copy-button.is-copied .copy-chip :global(.copy-icon) {
+    opacity: 0;
+    transform: scale(0.6);
+    filter: blur(2px);
+  }
+
+  .copy-button.is-copied .copy-chip :global(.check-icon) {
+    opacity: 1;
+    transform: none;
+    filter: none;
     color: var(--color-success);
   }
 
-  .hours {
-    color: var(--color-foreground-muted);
-    font-size: 0.9rem;
+  .rows {
     margin: 0;
+    border-top: 1px solid var(--color-line);
+    align-self: end;
+  }
+
+  .row {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .row dd {
+    margin: 0;
+    font-size: var(--text-h3);
+    font-weight: 620;
+    letter-spacing: -0.02em;
+  }
+
+  .row dd.static {
+    font-size: var(--text-body);
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--color-foreground-muted);
+  }
+
+  .row a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .row a :global(.row-arrow) {
+    width: 1.3rem;
+    height: 1.3rem;
+    color: var(--color-foreground-muted);
+    transition:
+      transform var(--duration-medium) var(--ease-out),
+      color var(--duration-ui) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .row a:hover :global(.row-arrow) {
+      transform: translate(3px, -3px);
+      color: var(--color-accent);
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @media (min-width: 60rem) {
+    .grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 4rem;
+    }
   }
 </style>
 
 <script>
-  const button = document.querySelector<HTMLButtonElement>(".email-copy");
-  const status = document.querySelector<HTMLParagraphElement>(".copy-status");
+  document.querySelectorAll<HTMLButtonElement>("[data-copy-email]").forEach((button) => {
+    const label = button.querySelector<HTMLElement>("[data-copy-label]");
+    const status = button.parentElement?.querySelector<HTMLElement>("[data-copy-status]");
+    const original = label?.textContent ?? "";
+    let timer = 0;
 
-  button?.addEventListener("click", async () => {
-    const email = button.dataset.email ?? "";
-    try {
-      await navigator.clipboard.writeText(email);
-      if (status) status.textContent = status.dataset.copiedLabel ?? "";
-    } catch (error) {
-      if (status) status.textContent = email;
-    }
+    button.addEventListener("click", async () => {
+      const email = button.dataset.copyEmail ?? "";
+      try {
+        await navigator.clipboard.writeText(email);
+      } catch (error) {
+        const range = document.createRange();
+        if (label) {
+          label.textContent = email;
+          range.selectNodeContents(label);
+          window.getSelection()?.removeAllRanges();
+          window.getSelection()?.addRange(range);
+        }
+        return;
+      }
+      button.classList.add("is-copied");
+      if (label) label.textContent = button.dataset.copied ?? "";
+      if (status) status.textContent = button.dataset.copied ?? "";
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        button.classList.remove("is-copied");
+        if (label) label.textContent = original;
+        if (status) status.textContent = "";
+      }, 1800);
+    });
   });
 </script>

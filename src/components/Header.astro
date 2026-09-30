@@ -1,24 +1,24 @@
 ---
 import type { SiteContent } from "../i18n/types";
 import Logo from "./Logo.astro";
-import ThemeToggle from "./ThemeToggle.astro";
+import Icon from "./Icon.astro";
 
 interface Props {
   content: SiteContent;
 }
 
 const { content } = Astro.props;
-const lightLabel = content.lang === "es" ? "Tema claro" : "Light theme";
-const darkLabel = content.lang === "es" ? "Tema oscuro" : "Dark theme";
+const homeHref = content.lang === "es" ? "/" : "/en/";
 ---
 
-<header class="header">
-  <div class="header-inner">
-    <a href="#hero" class="logo-link" aria-label="Andamio Labs">
+<div class="scroll-sentinel" data-scroll-sentinel aria-hidden="true"></div>
+<header class="header" data-header>
+  <div class="shell bar">
+    <a href={homeHref} class="brand" aria-label="Andamio Labs">
       <Logo />
     </a>
 
-    <nav class="nav-desktop" aria-label={content.lang === "es" ? "Navegación principal" : "Main navigation"}>
+    <nav class="nav" aria-label={content.header.navLabel}>
       <ul>
         {
           content.header.nav.map((link) => (
@@ -30,227 +30,383 @@ const darkLabel = content.lang === "es" ? "Tema oscuro" : "Dark theme";
       </ul>
     </nav>
 
-    <div class="actions">
-      <a class="lang-switch" href={content.languageSwitch.href} hreflang={content.languageSwitch.href === "/" ? "es" : "en"}>
+    <div class="tools">
+      <a
+        class="lang"
+        href={content.languageSwitch.href}
+        hreflang={content.lang === "es" ? "en" : "es"}
+        aria-label={content.languageSwitch.ariaLabel}
+      >
         {content.languageSwitch.label}
       </a>
-      <ThemeToggle lightLabel={lightLabel} darkLabel={darkLabel} />
-      <a class="cta" href={content.hero.ctaPrimary.href} target="_blank" rel="noopener noreferrer">
-        {content.header.ctaLabel}
-      </a>
-
-      <details class="mobile-menu">
-        <summary aria-label={content.lang === "es" ? "Abrir menú" : "Open menu"}>
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </summary>
-        <nav aria-label={content.lang === "es" ? "Navegación móvil" : "Mobile navigation"}>
-          <ul>
-            {
-              content.header.nav.map((link) => (
-                <li>
-                  <a href={link.href}>{link.label}</a>
-                </li>
-              ))
-            }
-          </ul>
-        </nav>
-      </details>
+      <button
+        type="button"
+        class="icon-button theme-toggle"
+        data-theme-toggle
+        data-label-light={content.theme.toLight}
+        data-label-dark={content.theme.toDark}
+        aria-label={content.theme.toLight}
+      >
+        <Icon name="sun" class="theme-icon sun" />
+        <Icon name="moon" class="theme-icon moon" />
+      </button>
+      <a class="button is-primary is-plain header-cta" href="#quote">{content.header.cta}</a>
+      <button
+        type="button"
+        class="icon-button menu-toggle"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-label-open={content.header.menuOpen}
+        data-label-close={content.header.menuClose}
+        aria-label={content.header.menuOpen}
+      >
+        <span class="menu-lines" aria-hidden="true"><span></span><span></span></span>
+      </button>
     </div>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+    <nav class="shell" aria-label={content.header.navLabel}>
+      <ul>
+        {
+          content.header.nav.map((link, index) => (
+            <li style={`--item: ${index}`}>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="button is-primary mobile-cta" href="#quote" style={`--item: ${content.header.nav.length}`}>
+        {content.header.cta}
+        <span class="button-chip"><Icon name="arrow-right" /></span>
+      </a>
+    </nav>
   </div>
 </header>
 
 <style>
+  .scroll-sentinel {
+    position: absolute;
+    top: 0;
+    height: 8px;
+    width: 1px;
+  }
+
   .header {
     position: sticky;
     top: 0;
     z-index: 50;
-    background-color: color-mix(in srgb, var(--color-background) 92%, transparent);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--color-border);
+    transition:
+      background-color var(--duration-medium) ease,
+      border-color var(--duration-medium) ease,
+      backdrop-filter var(--duration-medium) ease;
+    border-bottom: 1px solid transparent;
   }
 
-  .header-inner {
-    max-width: 72rem;
-    margin-inline: auto;
-    padding: 0.85rem 1.25rem;
+  .header.is-scrolled,
+  .header.is-open {
+    background-color: color-mix(in srgb, var(--color-background) 78%, transparent);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border-bottom-color: var(--color-line);
+  }
+
+  .bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    height: 4.5rem;
   }
 
-  .logo-link {
+  .brand {
     text-decoration: none;
+    border-radius: 6px;
   }
 
-  .nav-desktop {
+  .nav {
     display: none;
   }
 
-  .nav-desktop ul {
+  .nav ul {
     display: flex;
-    gap: 1.75rem;
+    gap: 2rem;
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  .nav-desktop a {
+  .nav a {
+    position: relative;
     color: var(--color-foreground-muted);
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 0.975rem;
     font-weight: 500;
-    transition: color 0.15s ease;
+    transition: color var(--duration-ui) ease;
   }
 
-  .nav-desktop a:hover {
-    color: var(--color-accent);
+  .nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.35rem;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--duration-medium) var(--ease-out);
   }
 
-  .actions {
+  @media (hover: hover) and (pointer: fine) {
+    .nav a:hover {
+      color: var(--color-foreground);
+    }
+
+    .nav a:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .icon-button:hover,
+    .lang:hover {
+      color: var(--color-foreground);
+      background-color: var(--color-surface-high);
+    }
+  }
+
+  .tools {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.35rem;
   }
 
-  .lang-switch {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  .lang,
+  .icon-button {
+    display: grid;
+    place-items: center;
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 9999px;
-    border: 1px solid var(--color-border);
-    color: var(--color-foreground);
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 700;
-    transition:
-      border-color 0.15s ease,
-      color 0.15s ease;
-  }
-
-  .lang-switch:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-  }
-
-  .cta {
-    display: none;
-    border-radius: 9999px;
-    background-color: var(--color-accent);
-    color: var(--color-accent-foreground);
-    text-decoration: none;
+    border-radius: var(--radius-base);
+    border: none;
+    background: transparent;
+    color: var(--color-foreground-muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
     font-weight: 600;
-    font-size: 0.9rem;
-    padding: 0.6rem 1.25rem;
-    transition: background-color 0.15s ease;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-ui) ease,
+      color var(--duration-ui) ease,
+      transform var(--duration-press) var(--ease-out);
   }
 
-  .cta:hover {
-    background-color: var(--color-accent-hover);
+  .lang:active,
+  .icon-button:active {
+    transform: scale(0.94);
   }
 
-  .mobile-menu {
+  .theme-toggle {
     position: relative;
   }
 
-  .mobile-menu summary {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 9999px;
-    border: 1px solid var(--color-border);
-    cursor: pointer;
-  }
-
-  .mobile-menu summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .mobile-menu .bar {
-    width: 1.05rem;
-    height: 2px;
-    background-color: var(--color-foreground);
-    border-radius: 1px;
-  }
-
-  .mobile-menu[open] summary {
-    border-color: var(--color-accent);
-  }
-
-  .mobile-menu nav {
+  .theme-toggle :global(.theme-icon) {
     position: absolute;
-    top: calc(100% + 0.6rem);
-    right: 0;
-    min-width: 12rem;
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 0.75rem;
-    padding: 0.5rem;
-    box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.35);
+    width: 1.2rem;
+    height: 1.2rem;
+    transition:
+      transform var(--duration-medium) var(--ease-out),
+      opacity var(--duration-ui) ease;
+  }
+
+  .theme-toggle :global(.moon) {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+  }
+
+  :global([data-theme="light"]) .theme-toggle :global(.sun) {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+
+  :global([data-theme="light"]) .theme-toggle :global(.moon) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .header-cta {
+    display: none;
+    min-height: 2.5rem;
+    margin-left: 0.5rem;
+    font-size: 0.925rem;
+    padding: 0 1rem;
+  }
+
+  .menu-lines {
+    position: relative;
+    width: 1.1rem;
+    height: 0.6rem;
+  }
+
+  .menu-lines span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    border-radius: 2px;
+    background-color: currentColor;
+    transition: transform var(--duration-medium) var(--ease-out), top var(--duration-medium) var(--ease-out);
+  }
+
+  .menu-lines span:first-child {
+    top: 0;
+  }
+
+  .menu-lines span:last-child {
+    top: calc(100% - 1.5px);
+  }
+
+  .menu-toggle[aria-expanded="true"] .menu-lines span:first-child {
+    top: calc(50% - 0.75px);
+    transform: rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded="true"] .menu-lines span:last-child {
+    top: calc(50% - 0.75px);
+    transform: rotate(-45deg);
+  }
+
+  .mobile-menu {
+    border-top: 1px solid var(--color-line);
+    padding-block: 1rem 1.75rem;
   }
 
   .mobile-menu ul {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
   }
 
-  .mobile-menu a {
+  .mobile-menu li,
+  .mobile-cta {
+    animation: menu-item 0.42s var(--ease-out) both;
+    animation-delay: calc(var(--item) * 40ms);
+  }
+
+  .mobile-menu li a {
     display: block;
-    padding: 0.6rem 0.75rem;
-    border-radius: 0.5rem;
-    color: var(--color-foreground);
+    padding: 0.65rem 0;
+    font-size: var(--text-h3);
+    font-weight: 650;
+    letter-spacing: -0.02em;
     text-decoration: none;
-    font-weight: 500;
+    color: var(--color-foreground);
   }
 
-  .mobile-menu a:hover {
-    background-color: var(--color-background);
-    color: var(--color-accent);
+  .mobile-cta {
+    margin-top: 1.25rem;
   }
 
-  @media (min-width: 56rem) {
-    .nav-desktop {
+  @keyframes menu-item {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .nav {
       display: block;
     }
 
-    .cta {
+    .header-cta {
       display: inline-flex;
     }
 
+    .menu-toggle,
     .mobile-menu {
-      display: none;
+      display: none !important;
     }
   }
 </style>
 
 <script>
-  const menus = document.querySelectorAll<HTMLDetailsElement>(".mobile-menu");
+  import { prefersReducedMotion } from "../scripts/spring";
 
-  document.addEventListener("click", (event) => {
-    menus.forEach((menu) => {
-      if (menu.open && !menu.contains(event.target as Node)) {
-        menu.open = false;
-      }
+  const header = document.querySelector<HTMLElement>("[data-header]");
+  const sentinel = document.querySelector<HTMLElement>("[data-scroll-sentinel]");
+  if (header && sentinel) {
+    new IntersectionObserver(([entry]) => {
+      header.classList.toggle("is-scrolled", !entry.isIntersecting);
+    }).observe(sentinel);
+  }
+
+  const themeToggle = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+
+  function currentTheme() {
+    return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+  }
+
+  function syncThemeLabel() {
+    if (!themeToggle) return;
+    const label = currentTheme() === "light" ? themeToggle.dataset.labelDark : themeToggle.dataset.labelLight;
+    themeToggle.setAttribute("aria-label", label ?? "");
+  }
+
+  function applyTheme(theme: "light" | "dark") {
+    if (theme === "light") document.documentElement.dataset.theme = "light";
+    else delete document.documentElement.dataset.theme;
+    try {
+      localStorage.setItem("theme", theme);
+    } catch (error) {}
+    syncThemeLabel();
+  }
+
+  themeToggle?.addEventListener("click", () => {
+    const next = currentTheme() === "light" ? "dark" : "light";
+    const doc = document as Document & { startViewTransition?: (callback: () => void) => { ready: Promise<void> } };
+    if (!doc.startViewTransition || prefersReducedMotion()) {
+      applyTheme(next);
+      return;
+    }
+    const rect = themeToggle.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    const transition = doc.startViewTransition(() => applyTheme(next));
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 520, easing: "cubic-bezier(0.77, 0, 0.175, 1)", pseudoElement: "::view-transition-new(root)" }
+      );
     });
   });
 
-  menus.forEach((menu) => {
-    menu.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        menu.open = false;
-      });
-    });
+  syncThemeLabel();
+
+  const menuToggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const mobileMenu = document.querySelector<HTMLElement>("[data-mobile-menu]");
+
+  function setMenu(open: boolean) {
+    if (!menuToggle || !mobileMenu || !header) return;
+    menuToggle.setAttribute("aria-expanded", String(open));
+    menuToggle.setAttribute("aria-label", (open ? menuToggle.dataset.labelClose : menuToggle.dataset.labelOpen) ?? "");
+    mobileMenu.hidden = !open;
+    header.classList.toggle("is-open", open);
+  }
+
+  menuToggle?.addEventListener("click", () => setMenu(menuToggle.getAttribute("aria-expanded") !== "true"));
+  mobileMenu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setMenu(false)));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && menuToggle?.getAttribute("aria-expanded") === "true") {
+      setMenu(false);
+      menuToggle.focus();
+    }
   });
 </script>

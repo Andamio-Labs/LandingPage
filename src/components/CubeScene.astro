@@ -1,0 +1,351 @@
+---
+import IsoCube from "./IsoCube.astro";
+import Icon from "./Icon.astro";
+
+interface Props {
+  hint: string;
+}
+
+const { hint } = Astro.props;
+
+const unitX = 52;
+const unitY = 30;
+const point = (i: number, j: number) => [(i - j) * unitX, (i + j) * unitY];
+const range = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
+const latticeLines = [
+  ...range.map((n) => [...point(-4, n), ...point(4, n)]),
+  ...range.map((n) => [...point(n, -4), ...point(n, 4)]),
+  ...range.filter((n) => n % 2 === 0).map((n) => {
+    const [x, y] = point(n, -n);
+    return [x, y - 150, x, y + 150];
+  }),
+];
+
+const cubes = [
+  { variant: "filled" as const, i: 0, j: 0, k: 0, depth: 1 },
+  { variant: "navy" as const, i: 0, j: 0, k: 1.08, depth: 0.55 },
+  { variant: "teal" as const, i: 1.12, j: 0, k: 0, depth: 1.45 },
+  { variant: "teal" as const, i: 0, j: 1.12, k: 0, depth: 1.45 },
+];
+---
+
+<div class="cube-scene" data-cube-scene>
+  <div class="stage" data-stage aria-hidden="true">
+    <svg class="lattice" viewBox="-320 -300 640 600" preserveAspectRatio="xMidYMid slice">
+      {
+        latticeLines.map(([x1, y1, x2, y2], index) => (
+          <line x1={x1} y1={y1} x2={x2} y2={y2} pathLength="1" style={`--line-index: ${index}`} />
+        ))
+      }
+    </svg>
+    {
+      cubes.map((cube, index) => (
+        <div
+          class="cube"
+          data-cube
+          data-i={cube.i}
+          data-j={cube.j}
+          data-k={cube.k}
+          data-depth={cube.depth}
+          data-order={index}
+        >
+          <IsoCube variant={cube.variant} />
+        </div>
+      ))
+    }
+  </div>
+  <p class="hint mono-label" aria-hidden="true">
+    <Icon name="hand-grabbing" />
+    {hint}
+  </p>
+</div>
+
+<style>
+  .cube-scene {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+  }
+
+  .stage {
+    position: relative;
+    width: min(100%, 34rem);
+    aspect-ratio: 1 / 0.92;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .lattice {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    mask-image: radial-gradient(closest-side, #000 35%, transparent 100%);
+    -webkit-mask-image: radial-gradient(closest-side, #000 35%, transparent 100%);
+  }
+
+  .lattice line {
+    stroke: var(--color-line-strong);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.45;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw-line 1.1s var(--ease-out) forwards;
+    animation-delay: calc(var(--line-index) * 18ms);
+  }
+
+  .cube {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    width: var(--cube-width, 7.5rem);
+    aspect-ratio: 104 / 120;
+    touch-action: none;
+    cursor: grab;
+    will-change: transform;
+  }
+
+  .cube:active {
+    cursor: grabbing;
+  }
+
+  .hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    opacity: 0;
+    animation: fade-in 0.6s var(--ease-out) 1.4s forwards;
+  }
+
+  @keyframes draw-line {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes fade-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lattice line {
+      stroke-dashoffset: 0;
+      animation: none;
+    }
+
+    .hint {
+      opacity: 1;
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { Spring, VelocityTracker, frameLoop, prefersReducedMotion } from "../scripts/spring";
+
+  interface CubeState {
+    el: HTMLElement;
+    i: number;
+    j: number;
+    k: number;
+    depth: number;
+    order: number;
+    x: Spring;
+    y: Spring;
+    rotation: Spring;
+    dragging: boolean;
+    grabX: number;
+    grabY: number;
+    tracker: VelocityTracker;
+    pointerId: number | null;
+    releaseAt: number;
+  }
+
+  function setupScene(scene: HTMLElement) {
+    const stage = scene.querySelector<HTMLElement>("[data-stage]");
+    if (!stage) return;
+    const reduced = prefersReducedMotion();
+    const settle = { response: 0.5, damping: 1 };
+    const thrown = { response: 0.55, damping: 0.62 };
+    const parallaxX = new Spring(0, { response: 0.9, damping: 1 });
+    const parallaxY = new Spring(0, { response: 0.9, damping: 1 });
+    let halfWidth = 60;
+
+    const cubes: CubeState[] = Array.from(stage.querySelectorAll<HTMLElement>("[data-cube]")).map((el) => ({
+      el,
+      i: Number(el.dataset.i),
+      j: Number(el.dataset.j),
+      k: Number(el.dataset.k),
+      depth: Number(el.dataset.depth),
+      order: Number(el.dataset.order),
+      x: new Spring(0, settle),
+      y: new Spring(0, settle),
+      rotation: new Spring(0, { response: 0.35, damping: 0.8 }),
+      dragging: false,
+      grabX: 0,
+      grabY: 0,
+      tracker: new VelocityTracker(),
+      pointerId: null,
+      releaseAt: 0,
+    }));
+
+    function home(cube: CubeState) {
+      const verticalHalf = halfWidth * 0.58;
+      const edge = halfWidth * 1.16;
+      return {
+        x: (cube.i - cube.j) * halfWidth,
+        y: (cube.i + cube.j) * verticalHalf - cube.k * edge,
+      };
+    }
+
+    function layout() {
+      halfWidth = Math.min(stage!.clientWidth, 544) / 8.4;
+      stage!.style.setProperty("--cube-width", `${halfWidth * 2.08}px`);
+      cubes.forEach((cube) => {
+        const target = home(cube);
+        cube.x.target = target.x;
+        cube.y.target = target.y;
+        cube.el.style.zIndex = String(Math.round((cube.i + cube.j) * 10 + cube.k * 4 + 10));
+      });
+    }
+
+    function render() {
+      cubes.forEach((cube) => {
+        const width = cube.el.offsetWidth;
+        const height = cube.el.offsetHeight;
+        const offsetX = cube.dragging ? 0 : parallaxX.value * cube.depth;
+        const offsetY = cube.dragging ? 0 : parallaxY.value * cube.depth;
+        const x = cube.x.value + offsetX - width / 2;
+        const y = cube.y.value + offsetY - height / 2;
+        cube.el.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${cube.rotation.value}deg)`;
+      });
+    }
+
+    const loop = frameLoop((delta) => {
+      let active = false;
+      [parallaxX, parallaxY].forEach((spring) => {
+        spring.step(delta);
+        if (!spring.settled) active = true;
+      });
+      const now = performance.now();
+      cubes.forEach((cube) => {
+        const waiting = now < cube.releaseAt;
+        if (!waiting && cube.el.style.opacity === "0") cube.el.style.opacity = "1";
+        if (!cube.dragging && !waiting) {
+          cube.x.step(delta);
+          cube.y.step(delta);
+        }
+        cube.rotation.step(delta);
+        if (waiting || cube.dragging || !cube.x.settled || !cube.y.settled || !cube.rotation.settled) active = true;
+      });
+      render();
+      return active;
+    });
+
+    layout();
+
+    const startedAt = performance.now();
+
+    cubes.forEach((cube) => {
+      const target = home(cube);
+      cube.x.jump(target.x);
+      if (reduced) {
+        cube.y.jump(target.y);
+        return;
+      }
+      cube.releaseAt = startedAt + 260 + cube.order * 140;
+      cube.y.jump(target.y - stage.clientHeight * 0.9);
+      cube.y.target = target.y;
+      cube.y.configure({ response: 0.62, damping: 0.58 });
+      cube.el.style.opacity = "0";
+      cube.el.style.transition = "opacity 240ms ease";
+    });
+
+    render();
+    loop.start();
+
+    cubes.forEach((cube) => {
+      cube.el.addEventListener("pointerdown", (event) => {
+        if (cube.pointerId !== null) return;
+        event.preventDefault();
+        cube.pointerId = event.pointerId;
+        cube.el.setPointerCapture(event.pointerId);
+        const rect = stage.getBoundingClientRect();
+        const pointerX = event.clientX - rect.left - rect.width / 2;
+        const pointerY = event.clientY - rect.top - rect.height * 0.52;
+        cube.grabX = pointerX - cube.x.value;
+        cube.grabY = pointerY - cube.y.value;
+        cube.dragging = true;
+        cube.tracker.reset();
+        cube.tracker.add(event.clientX, event.clientY);
+        cube.el.style.zIndex = "60";
+        loop.start();
+      });
+
+      cube.el.addEventListener("pointermove", (event) => {
+        if (!cube.dragging || event.pointerId !== cube.pointerId) return;
+        const rect = stage.getBoundingClientRect();
+        const pointerX = event.clientX - rect.left - rect.width / 2;
+        const pointerY = event.clientY - rect.top - rect.height * 0.52;
+        cube.x.value = pointerX - cube.grabX;
+        cube.y.value = pointerY - cube.grabY;
+        cube.tracker.add(event.clientX, event.clientY);
+        const velocity = cube.tracker.velocity();
+        cube.rotation.target = Math.max(-16, Math.min(16, velocity.x * 0.012));
+      });
+
+      const release = (event: PointerEvent) => {
+        if (event.pointerId !== cube.pointerId) return;
+        cube.pointerId = null;
+        cube.dragging = false;
+        const velocity = cube.tracker.velocity();
+        cube.rotation.target = 0;
+        cube.x.configure(thrown);
+        cube.y.configure(thrown);
+        if (reduced) {
+          const target = home(cube);
+          cube.x.jump(target.x);
+          cube.y.jump(target.y);
+          cube.rotation.jump(0);
+        } else {
+          cube.x.velocity = velocity.x;
+          cube.y.velocity = velocity.y;
+        }
+        layout();
+        loop.start();
+      };
+
+      cube.el.addEventListener("pointerup", release);
+      cube.el.addEventListener("pointercancel", release);
+    });
+
+    const hero = scene.closest("section") ?? scene;
+    if (!reduced && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      hero.addEventListener("pointermove", (event) => {
+        const rect = hero.getBoundingClientRect();
+        const normalizedX = (event.clientX - rect.left) / rect.width - 0.5;
+        const normalizedY = (event.clientY - rect.top) / rect.height - 0.5;
+        parallaxX.target = normalizedX * -18;
+        parallaxY.target = normalizedY * -12;
+        loop.start();
+      });
+      hero.addEventListener("pointerleave", () => {
+        parallaxX.target = 0;
+        parallaxY.target = 0;
+        loop.start();
+      });
+    }
+
+    new ResizeObserver(() => {
+      layout();
+      loop.start();
+    }).observe(stage);
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-cube-scene]").forEach(setupScene);
+</script>

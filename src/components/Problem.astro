@@ -1,68 +1,61 @@
 ---
 import type { SiteContent } from "../i18n/types";
+import NoteStack from "./NoteStack";
+import { icons } from "../icons";
 
 interface Props {
   content: SiteContent;
 }
 
 const { content } = Astro.props;
+const { problem } = content;
 ---
 
-<section id="problem" class="problem">
-  <div class="inner">
-    <h2>{content.problem.title}</h2>
-    <p class="intro">{content.problem.intro}</p>
-    <ul class="points">
-      {content.problem.points.map((point) => <li>{point}</li>)}
-    </ul>
+<section id="problem" class="section problem">
+  <div class="shell grid">
+    <div class="intro">
+      <h2 class="section-title">{problem.title}</h2>
+      <p class="section-lead">{problem.lead}</p>
+    </div>
+    <div class="stack">
+      <NoteStack
+        client:visible
+        notes={problem.notes}
+        next={problem.next}
+        counter={problem.counter}
+        dragHint={problem.dragHint}
+        doneTitle={problem.doneTitle}
+        doneText={problem.doneText}
+        doneCta={problem.doneCta}
+        restart={problem.restart}
+        arrowIcon={icons["arrow-right"]}
+        downIcon={icons["arrow-down"]}
+      />
+    </div>
   </div>
 </section>
 
 <style>
-  .problem {
-    padding: 4rem 1.25rem;
-    background-color: var(--color-surface);
-  }
-
-  .inner {
-    max-width: 48rem;
-    margin-inline: auto;
-  }
-
-  h2 {
-    font-size: clamp(1.75rem, 4vw, 2.25rem);
-    margin: 0 0 1rem;
-  }
-
-  .intro {
-    color: var(--color-foreground-muted);
-    font-size: 1.05rem;
-    margin: 0 0 2rem;
-  }
-
-  .points {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .grid {
     display: grid;
-    gap: 1rem;
+    gap: 3rem;
+    align-items: center;
   }
 
-  .points li {
-    position: relative;
-    padding-left: 1.75rem;
-    font-size: 1rem;
-    line-height: 1.5;
+  .stack {
+    width: 100%;
+    max-width: 30rem;
+    justify-self: center;
   }
 
-  .points li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.4rem;
-    width: 0.6rem;
-    height: 0.6rem;
-    background-color: var(--color-error);
-    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  @media (min-width: 60rem) {
+    .grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 4rem;
+    }
+
+    .stack {
+      justify-self: end;
+    }
   }
 </style>
