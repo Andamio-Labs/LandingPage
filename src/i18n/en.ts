@@ -24,7 +24,6 @@ export const en: SiteContent = {
     ctaLabel: "Message us",
   },
   hero: {
-    eyebrow: "Andamio Labs",
     title: "Custom software so your business runs itself",
     subtitle:
       "Bookings, appointments, orders and inventory in one system built for your business, not a generic template.",

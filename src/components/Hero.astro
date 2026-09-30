@@ -11,7 +11,6 @@ const { content } = Astro.props;
 <section id="hero" class="hero">
   <div class="hero-inner">
     <div class="hero-copy">
-      <p class="eyebrow">{content.hero.eyebrow}</p>
       <h1>{content.hero.title}</h1>
       <p class="subtitle">{content.hero.subtitle}</p>
       <div class="cta-row">
@@ -64,15 +63,6 @@ const { content } = Astro.props;
     display: grid;
     gap: 2.5rem;
     align-items: center;
-  }
-
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin: 0 0 0.75rem;
   }
 
   h1 {

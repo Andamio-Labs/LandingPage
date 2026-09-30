@@ -24,7 +24,6 @@ export const es: SiteContent = {
     ctaLabel: "Escríbenos",
   },
   hero: {
-    eyebrow: "Andamio Labs",
     title: "Software a la medida para que tu negocio funcione solo",
     subtitle:
       "Reservas, citas, pedidos e inventario en un sistema hecho para tu negocio, no una plantilla genérica.",

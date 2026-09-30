@@ -22,7 +22,6 @@ export interface SiteContent {
     ctaLabel: string;
   };
   hero: {
-    eyebrow: string;
     title: string;
     subtitle: string;
     ctaPrimary: { label: string; href: string };
