@@ -1,8 +1,66 @@
+import type { IconName } from "../icons";
+
 export type Lang = "es" | "en";
 
 export interface NavLink {
   label: string;
   href: string;
+}
+
+export type SolutionId = "web" | "booking" | "appointments" | "orders" | "inventory" | "pwa";
+
+export interface SolutionPreviews {
+  web: {
+    inputLabel: string;
+    defaultName: string;
+    status: string;
+    directions: string;
+    message: string;
+    caption: string;
+  };
+  booking: {
+    days: string[];
+    dayLabel: string;
+    timeLabel: string;
+    slotsMany: string;
+    slotsOne: string;
+    full: string;
+    confirm: string;
+    confirmed: string;
+  };
+  appointments: {
+    servicesLabel: string;
+    services: { name: string; minutes: number; next: string }[];
+    nextLabel: string;
+    durationLabel: string;
+    minutesUnit: string;
+    book: string;
+    booked: string;
+  };
+  orders: {
+    items: string[];
+    add: string;
+    remove: string;
+    countMany: string;
+    countOne: string;
+    empty: string;
+    send: string;
+    sent: string;
+  };
+  inventory: {
+    products: { name: string; stock: number }[];
+    unit: string;
+    sell: string;
+    low: string;
+    out: string;
+    restock: string;
+  };
+  pwa: {
+    appName: string;
+    install: string;
+    installed: string;
+    reset: string;
+  };
 }
 
 export interface SiteContent {
@@ -16,58 +74,85 @@ export interface SiteContent {
   languageSwitch: {
     label: string;
     href: string;
+    ariaLabel: string;
+  };
+  theme: {
+    toLight: string;
+    toDark: string;
   };
   header: {
+    navLabel: string;
     nav: NavLink[];
-    ctaLabel: string;
+    cta: string;
+    menuOpen: string;
+    menuClose: string;
   };
   hero: {
-    title: string;
-    subtitle: string;
-    ctaPrimary: { label: string; href: string };
-    ctaSecondary: { label: string; href: string };
+    titleLines: string[];
+    lead: string;
+    secondaryCta: string;
+    sceneHint: string;
   };
   problem: {
     title: string;
-    intro: string;
-    points: string[];
+    lead: string;
+    notes: { tag: string; text: string }[];
+    next: string;
+    counter: string;
+    dragHint: string;
+    doneTitle: string;
+    doneText: string;
+    doneCta: string;
+    restart: string;
   };
   solutions: {
     title: string;
-    intro: string;
-    items: { title: string; description: string }[];
+    lead: string;
+    tabsLabel: string;
+    items: { id: SolutionId; title: string; benefit: string; icon: IconName }[];
+    previews: SolutionPreviews;
   };
   audiences: {
     title: string;
-    intro: string;
-    items: string[];
-  };
-  projectsSection: {
-    title: string;
-    intro: string;
-    ctaLabel: string;
-    demo: {
-      title: string;
-      description: string;
-      dayLabel: string;
-      timeLabel: string;
-      availableLabel: string;
-      availableLabelSingular: string;
-      fullLabel: string;
-      confirmLabel: string;
-      confirmedMessage: string;
-      selectPrompt: string;
-      days: string[];
-    };
+    items: { label: string; icon: IconName }[];
   };
   process: {
     title: string;
-    intro: string;
-    steps: { title: string; description: string }[];
+    lead: string;
+    steps: { title: string; text: string; icon: IconName }[];
+  };
+  quote: {
+    title: string;
+    lead: string;
+    businessLabel: string;
+    otherOption: string;
+    otherLabel: string;
+    needsLabel: string;
+    needsHelp: string;
+    timingLabel: string;
+    timingOptions: string[];
+    nameLabel: string;
+    detailsLabel: string;
+    optional: string;
+    previewLabel: string;
+    greeting: string;
+    businessLine: string;
+    needsLine: string;
+    timingLine: string;
+    nameLine: string;
+    detailsLine: string;
+    pending: string;
+    sendWhatsapp: string;
+    sendEmail: string;
+    emailSubject: string;
+    error: string;
   };
   team: {
     title: string;
-    intro: string;
+    lead: string;
+    dragHint: string;
+    badgeOrg: string;
+    portfolio: string;
   };
   faq: {
     title: string;
@@ -75,16 +160,17 @@ export interface SiteContent {
   };
   contact: {
     title: string;
-    intro: string;
+    lead: string;
     whatsappMessage: string;
-    whatsappLabel: string;
+    whatsappCta: string;
+    copyEmail: string;
+    copied: string;
     emailLabel: string;
-    copyLabel: string;
-    copiedLabel: string;
-    hours: string;
+    whatsappLabel: string;
+    hoursLabel: string;
+    hoursValue: string;
   };
   footer: {
     tagline: string;
-    rights: string;
   };
 }
