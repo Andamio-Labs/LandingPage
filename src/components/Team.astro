@@ -50,6 +50,7 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
               </div>
               <h3 class="name">{member.name}</h3>
               <p class="role">{member.role[lang]}</p>
+              {(member.github || member.linkedin || member.portfolio) && (
               <div class="links">
                 {member.github && (
                   <a href={`https://github.com/${member.github}`} target="_blank" rel="noopener noreferrer" aria-label={`GitHub, ${member.name}`}>
@@ -73,6 +74,7 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
                   </a>
                 )}
               </div>
+              )}
             </article>
           </div>
           </li>
@@ -177,7 +179,7 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
   .badge {
     position: relative;
     width: min(16.5rem, 78vw);
-    margin-top: -0.55rem;
+    margin-top: -0.95rem;
     padding: 1rem 1rem 1.1rem;
     border-radius: 0.9rem;
     background-color: var(--color-paper);

@@ -329,7 +329,7 @@ function PwaPreview({ copy, glyphs }: { copy: SolutionPreviews["pwa"]; glyphs: S
             )}
             {installed && <span className="app-name">{copy.appName}</span>}
           </span>
-          {Array.from({ length: 11 }, (_, index) => (
+          {Array.from({ length: 8 }, (_, index) => (
             <span key={index} className="app-slot is-ghost"></span>
           ))}
         </div>
@@ -906,42 +906,55 @@ const explorerStyles = `
 
 .explorer .pwa {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.75rem;
   align-items: center;
   justify-items: center;
+  min-height: 18rem;
 }
 
 .explorer .phone {
-  width: 11.5rem;
-  aspect-ratio: 9 / 16;
-  border-radius: 1.75rem;
+  position: relative;
+  width: 11rem;
+  aspect-ratio: 9 / 17;
+  border-radius: 1.9rem;
   border: 1px solid var(--color-line-strong);
   background-color: var(--color-background);
-  padding: 1.6rem 0.9rem;
+  padding: 2.4rem 1rem 1rem;
+  overflow: hidden;
+  box-shadow: 0 24px 48px -28px rgb(3 8 10 / 0.7);
+}
+
+.explorer .phone::before {
+  content: "";
+  position: absolute;
+  top: 0.7rem;
+  left: 50%;
+  width: 3.2rem;
+  height: 0.55rem;
+  translate: -50% 0;
+  border-radius: 9999px;
+  background-color: var(--color-surface-high);
 }
 
 .explorer .phone-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.9rem 0.6rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.35rem 0.7rem;
 }
 
 .explorer .app-slot {
   position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 0.3rem;
   aspect-ratio: 1;
+  border-radius: 0.75rem;
 }
 
 .explorer .app-slot.is-ghost {
-  border-radius: 0.8rem;
   background-color: var(--color-surface-high);
-  opacity: 0.55;
+  opacity: 0.6;
 }
 
 .explorer .app-slot.is-installed {
-  aspect-ratio: auto;
+  opacity: 1;
 }
 
 .explorer .app-icon {
@@ -951,20 +964,27 @@ const explorerStyles = `
   display: grid;
   place-items: center;
   width: 100%;
-  aspect-ratio: 1;
-  border-radius: 0.8rem;
+  height: 100%;
+  border-radius: 0.75rem;
   background-color: #fbfcfc;
-  border: 1px solid var(--color-line);
-  animation: install 560ms var(--ease-out) both;
+  animation: install 520ms var(--ease-out) both;
 }
 
 .explorer .app-icon svg {
-  width: 72%;
+  width: 74%;
 }
 
 .explorer .app-name {
-  font-size: 0.6rem;
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 0.25rem);
+  translate: -50% 0;
+  max-width: 130%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.56rem;
   font-weight: 600;
+  line-height: 1;
   white-space: nowrap;
   animation: panel-in 300ms var(--ease-out) 240ms both;
 }
@@ -972,8 +992,19 @@ const explorerStyles = `
 .explorer .pwa-copy {
   display: grid;
   justify-items: center;
-  gap: 0.75rem;
+  align-content: center;
+  gap: 0.9rem;
   text-align: center;
+  max-width: 22rem;
+}
+
+.explorer .pwa-copy .success {
+  text-align: left;
+  align-items: flex-start;
+}
+
+.explorer .pwa-copy .success .icon {
+  margin-top: 0.2rem;
 }
 
 @keyframes panel-in {
@@ -1042,8 +1073,10 @@ const explorerStyles = `
   }
 
   .explorer .pwa {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
     justify-items: start;
+    gap: 3rem;
+    padding-inline: 1rem;
   }
 
   .explorer .pwa-copy {
