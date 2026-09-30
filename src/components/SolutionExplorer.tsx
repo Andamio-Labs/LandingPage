@@ -1,5 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { SolutionId, SolutionPreviews } from "../i18n/types";
+import { boxGeometry, logoBoxes, markBounds } from "../data/logo";
 
 interface SolutionItem {
   id: SolutionId;
@@ -17,6 +18,32 @@ interface SolutionExplorerProps {
 
 function Glyph({ svg, className = "" }: { svg: string; className?: string }) {
   return <span className={`icon ${className}`} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
+}
+
+function MiniMark() {
+  return (
+    <svg viewBox={`${markBounds.x} ${markBounds.y} ${markBounds.width} ${markBounds.height}`} aria-hidden="true">
+      {logoBoxes.filter((box) => box.id === "top" || box.id === "left" || box.id === "right").map((box) => {
+        const geometry = boxGeometry(box);
+        const stroke = box.tone === "teal" ? "var(--logo-teal)" : "var(--logo-navy)";
+        if (box.frameOnly) {
+          return (
+            <g key={box.id} fill="none" strokeWidth={40} strokeLinejoin="round" strokeLinecap="round">
+              <polyline points={geometry.frameLeft} stroke="var(--logo-teal)" />
+              <polyline points={geometry.frameRight} stroke="var(--logo-navy)" />
+            </g>
+          );
+        }
+        return (
+          <g key={box.id} fill="none" stroke={stroke} strokeWidth={40} strokeLinejoin="round" strokeLinecap="round">
+            <polygon points={geometry.silhouette} fill={box.solid ? "var(--logo-fill)" : "none"} />
+            <polyline points={geometry.inner} />
+            <polyline points={geometry.spine} />
+          </g>
+        );
+      })}
+    </svg>
+  );
 }
 
 function slugify(value: string) {
@@ -297,11 +324,7 @@ function PwaPreview({ copy, glyphs }: { copy: SolutionPreviews["pwa"]; glyphs: S
           <span className={`app-slot${installed ? " is-installed" : ""}`}>
             {installed && (
               <span className="app-icon">
-                <svg viewBox="-2 -2 104 120">
-                  <polygon points="50,0 100,29 50,58 0,29" fill="var(--c-cube-top)" />
-                  <polygon points="0,29 50,58 50,116 0,87" fill="var(--c-cube-left)" />
-                  <polygon points="100,29 50,58 50,116 100,87" fill="var(--c-cube-right)" />
-                </svg>
+                <MiniMark />
               </span>
             )}
             {installed && <span className="app-name">{copy.appName}</span>}
@@ -922,18 +945,21 @@ const explorerStyles = `
 }
 
 .explorer .app-icon {
+  --logo-teal: #166462;
+  --logo-navy: #28313b;
+  --logo-fill: #fbfcfc;
   display: grid;
   place-items: center;
   width: 100%;
   aspect-ratio: 1;
   border-radius: 0.8rem;
-  background-color: var(--color-surface-high);
+  background-color: #fbfcfc;
   border: 1px solid var(--color-line);
   animation: install 560ms var(--ease-out) both;
 }
 
 .explorer .app-icon svg {
-  width: 55%;
+  width: 72%;
 }
 
 .explorer .app-name {

@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import type { SiteContent } from "../i18n/types";
 import { team } from "../data/team";
 import Icon from "./Icon.astro";
+import LogoMark from "./LogoMark.astro";
 
 interface Props {
   content: SiteContent;
@@ -36,11 +37,7 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
             <article class="badge" data-badge>
               <div class="badge-top">
                 <span class="badge-org">{content.team.badgeOrg}</span>
-                <svg class="badge-mark" viewBox="-2 -2 104 120" aria-hidden="true">
-                  <polygon points="50,0 100,29 50,58 0,29" />
-                  <polygon points="0,29 50,58 50,116 0,87" />
-                  <polygon points="100,29 50,58 50,116 100,87" />
-                </svg>
+                <LogoMark class="badge-mark" strokeWidth={40} simple />
               </div>
               <div class="photo">
                 {member.photo ? (
@@ -185,6 +182,9 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
     border-radius: 0.9rem;
     background-color: var(--color-paper);
     color: var(--color-ink);
+    --logo-teal: #166462;
+    --logo-navy: #28313b;
+    --logo-fill: var(--color-paper);
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.25) inset,
       0 28px 50px -24px rgb(3 8 10 / 0.7);
@@ -223,21 +223,8 @@ const strapText = Array.from({ length: 6 }, () => content.team.badgeOrg).join(" 
     color: var(--color-ink-muted);
   }
 
-  .badge-mark {
-    width: 1rem;
-    height: 1.15rem;
-  }
-
-  .badge-mark polygon:nth-child(1) {
-    fill: var(--teal-600);
-  }
-
-  .badge-mark polygon:nth-child(2) {
-    fill: var(--teal-800);
-  }
-
-  .badge-mark polygon:nth-child(3) {
-    fill: var(--teal-950);
+  .badge :global(.badge-mark) {
+    width: 1.5rem;
   }
 
   .photo {

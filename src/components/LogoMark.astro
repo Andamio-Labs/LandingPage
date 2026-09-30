@@ -1,0 +1,32 @@
+---
+import { logoBoxes, markBounds } from "../data/logo";
+import LogoPiece from "./LogoPiece.astro";
+
+interface Props {
+  glyphs?: boolean;
+  class?: string;
+  strokeWidth?: number;
+  simple?: boolean;
+}
+
+const { glyphs = false, class: className = "", strokeWidth, simple = false } = Astro.props;
+const boxes = simple ? logoBoxes.filter((box) => box.id === "top" || box.id === "left" || box.id === "right") : logoBoxes;
+const viewBox = `${markBounds.x} ${markBounds.y} ${markBounds.width} ${markBounds.height}`;
+---
+
+<span class={`logo-mark ${className}`} aria-hidden="true">
+  {boxes.map((box) => <LogoPiece box={box} glyphs={glyphs} viewBox={viewBox} strokeWidth={strokeWidth} />)}
+</span>
+
+<style>
+  .logo-mark {
+    position: relative;
+    display: inline-block;
+    aspect-ratio: 521 / 500;
+  }
+
+  .logo-mark :global(.logo-piece) {
+    position: absolute;
+    inset: 0;
+  }
+</style>

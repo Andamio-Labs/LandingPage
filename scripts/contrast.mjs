@@ -64,6 +64,8 @@ const pairs = [
   ["tinta suave / papel", "c-ink-muted", "c-paper", 4.5],
   ["éxito / superficie", "c-success", "c-surface", 4.5],
   ["error / superficie", "c-error", "c-surface", 4.5],
+  ["logo teal / fondo", "logo-teal", "c-bg", 3],
+  ["logo navy / fondo", "logo-navy", "c-bg", 3],
 ];
 
 let failed = false;

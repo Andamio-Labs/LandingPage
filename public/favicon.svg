@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#151C23" />
-  <polygon points="32,14 46,22 32,30 18,22" fill="#1B7A6E" stroke="#87DCC7" stroke-width="1.5" stroke-linejoin="round" />
-  <polygon points="18,22 32,30 32,46 18,38" fill="#134E46" stroke="#87DCC7" stroke-width="1.5" stroke-linejoin="round" />
-  <polygon points="46,22 32,30 32,46 46,38" fill="#103C37" stroke="#87DCC7" stroke-width="1.5" stroke-linejoin="round" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="188 103.5 649 649"><rect x="188" y="103.5" width="649" height="649" rx="143" fill="#fbfcfc"/><g fill="none" stroke="#166462" stroke-width="52" stroke-linejoin="round" stroke-linecap="round"><polygon points="512,188 640,260 640,440 513,512 385,440 385,260"/><polyline points="385,260 513,332 640,260"/><polyline points="513,332 513,512"/></g><g fill="none" stroke="#166462" stroke-width="52" stroke-linejoin="round" stroke-linecap="round"><polygon points="435,345 560,418 560,568 387,668 262,595 262,445"/><polyline points="262,445 387,518 560,418"/><polyline points="387,518 387,668"/></g><g fill="none" stroke="#28313b" stroke-width="52" stroke-linejoin="round" stroke-linecap="round"><polygon points="588,345 765,445 765,595 640,668 463,568 463,418"/><polyline points="463,418 640,518 765,445"/><polyline points="640,518 640,668"/></g></svg>

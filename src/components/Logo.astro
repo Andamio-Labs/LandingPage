@@ -1,4 +1,6 @@
 ---
+import LogoMark from "./LogoMark.astro";
+
 interface Props {
   class?: string;
 }
@@ -7,11 +9,7 @@ const { class: className = "" } = Astro.props;
 ---
 
 <span class={`logo ${className}`}>
-  <svg class="mark" viewBox="-2 -2 104 120" aria-hidden="true" focusable="false">
-    <polygon class="top" points="50,0 100,29 50,58 0,29"></polygon>
-    <polygon class="left" points="0,29 50,58 50,116 0,87"></polygon>
-    <polygon class="right" points="100,29 50,58 50,116 100,87"></polygon>
-  </svg>
+  <LogoMark class="mark" strokeWidth={36} simple />
   <span class="word">Andamio Labs</span>
 </span>
 
@@ -21,28 +19,18 @@ const { class: className = "" } = Astro.props;
     align-items: center;
     gap: 0.6rem;
     color: var(--color-foreground);
-    font-weight: 700;
-    font-stretch: 108%;
-    font-size: 1.075rem;
-    letter-spacing: -0.02em;
     white-space: nowrap;
   }
 
-  .mark {
-    width: 1.35rem;
-    height: 1.55rem;
+  .logo :global(.mark) {
+    width: 2.1rem;
     flex-shrink: 0;
   }
 
-  .top {
-    fill: var(--c-cube-top);
-  }
-
-  .left {
-    fill: var(--c-cube-left);
-  }
-
-  .right {
-    fill: var(--c-cube-right);
+  .word {
+    font-family: "Montserrat Wordmark", var(--font-sans);
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
   }
 </style>
