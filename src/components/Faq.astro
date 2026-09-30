@@ -1,0 +1,92 @@
+---
+import type { SiteContent } from "../i18n/types";
+
+interface Props {
+  content: SiteContent;
+}
+
+const { content } = Astro.props;
+---
+
+<section id="faq" class="faq">
+  <div class="inner">
+    <h2>{content.faq.title}</h2>
+    <div class="accordion">
+      {
+        content.faq.items.map((item) => (
+          <details class="item">
+            <summary>
+              <span>{item.question}</span>
+              <span class="icon" aria-hidden="true">
+                +
+              </span>
+            </summary>
+            <p>{item.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    padding: 4rem 1.25rem;
+    background-color: var(--color-surface);
+  }
+
+  .inner {
+    max-width: 48rem;
+    margin-inline: auto;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin: 0 0 2rem;
+  }
+
+  .accordion {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .item {
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    background-color: var(--color-background);
+    padding: 0.25rem 1.25rem;
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .icon {
+    flex-shrink: 0;
+    font-size: 1.25rem;
+    color: var(--color-accent);
+    transition: transform 0.15s ease;
+  }
+
+  .item[open] .icon {
+    transform: rotate(45deg);
+  }
+
+  .item p {
+    margin: 0 0 1.1rem;
+    color: var(--color-foreground-muted);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+</style>

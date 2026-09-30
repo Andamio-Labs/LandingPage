@@ -1,0 +1,56 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<span class={`logo ${className}`}>
+  <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+    <polygon points="32,14 46,22 32,30 18,22" class="logo-face-top"></polygon>
+    <polygon points="18,22 32,30 32,46 18,38" class="logo-face-left"></polygon>
+    <polygon points="46,22 32,30 32,46 46,38" class="logo-face-right"></polygon>
+  </svg>
+  <span class="logo-word">Andamio Labs</span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-foreground);
+    white-space: nowrap;
+  }
+
+  .logo-mark {
+    width: 1.75rem;
+    height: 1.75rem;
+    flex-shrink: 0;
+  }
+
+  .logo-face-top {
+    fill: var(--color-accent);
+    stroke: var(--color-accent-hover);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+
+  .logo-face-left {
+    fill: var(--color-teal-800);
+    stroke: var(--color-accent-hover);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+
+  .logo-face-right {
+    fill: var(--color-teal-900);
+    stroke: var(--color-accent-hover);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+</style>

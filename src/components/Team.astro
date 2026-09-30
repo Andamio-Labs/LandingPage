@@ -1,0 +1,128 @@
+---
+import { Image } from "astro:assets";
+import type { SiteContent } from "../i18n/types";
+import { team } from "../data/team";
+
+interface Props {
+  content: SiteContent;
+}
+
+const { content } = Astro.props;
+const lang = content.lang;
+---
+
+<section id="team" class="team">
+  <div class="inner">
+    <h2>{content.team.title}</h2>
+    <p class="intro">{content.team.intro}</p>
+    <ul class="grid">
+      {
+        team.map((member) => (
+          <li class="card">
+            <Image src={member.photo} alt={member.name} width={96} height={96} class="avatar" />
+            <h3>{member.name}</h3>
+            <p class="role">{member.role[lang]}</p>
+            <div class="links">
+              {member.github ? (
+                <a href={`https://github.com/${member.github}`} target="_blank" rel="noopener noreferrer">
+                  GitHub
+                </a>
+              ) : null}
+              {member.linkedin ? (
+                <a
+                  href={`https://www.linkedin.com/in/${member.linkedin}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  LinkedIn
+                </a>
+              ) : null}
+              {member.portfolio ? (
+                <a href={member.portfolio} target="_blank" rel="noopener noreferrer">
+                  {lang === "es" ? "Portafolio" : "Portfolio"}
+                </a>
+              ) : null}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .team {
+    padding: 4rem 1.25rem;
+  }
+
+  .inner {
+    max-width: 60rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin: 0 0 1rem;
+  }
+
+  .intro {
+    color: var(--color-foreground-muted);
+    font-size: 1.05rem;
+    margin: 0 auto 2.5rem;
+    max-width: 40ch;
+  }
+
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+
+  .card {
+    padding: 1.75rem 1.25rem;
+    border-radius: 1rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+
+  .avatar {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 9999px;
+    object-fit: cover;
+    margin: 0 auto 1rem;
+    display: block;
+  }
+
+  h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+  }
+
+  .role {
+    margin: 0 0 1rem;
+    color: var(--color-foreground-muted);
+    font-size: 0.9rem;
+  }
+
+  .links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .links a {
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .links a:hover {
+    text-decoration: underline;
+  }
+</style>

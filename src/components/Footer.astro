@@ -1,0 +1,79 @@
+---
+import type { SiteContent } from "../i18n/types";
+import Logo from "./Logo.astro";
+
+interface Props {
+  content: SiteContent;
+}
+
+const { content } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="inner">
+    <Logo />
+    <p class="tagline">{content.footer.tagline}</p>
+    <nav aria-label={content.lang === "es" ? "Enlaces del pie de página" : "Footer links"}>
+      <ul>
+        {
+          content.header.nav.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <p class="rights">&copy; {year} {content.footer.rights}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: 3rem 1.25rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .inner {
+    max-width: 72rem;
+    margin-inline: auto;
+    display: grid;
+    gap: 1.5rem;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .tagline {
+    margin: 0;
+    color: var(--color-foreground-muted);
+    font-size: 0.95rem;
+    max-width: 32ch;
+  }
+
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.25rem;
+  }
+
+  nav a {
+    color: var(--color-foreground-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  nav a:hover {
+    color: var(--color-accent);
+  }
+
+  .rights {
+    margin: 0;
+    color: var(--color-foreground-muted);
+    font-size: 0.8rem;
+  }
+</style>

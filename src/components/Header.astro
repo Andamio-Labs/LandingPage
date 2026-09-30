@@ -1,0 +1,256 @@
+---
+import type { SiteContent } from "../i18n/types";
+import Logo from "./Logo.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+
+interface Props {
+  content: SiteContent;
+}
+
+const { content } = Astro.props;
+const lightLabel = content.lang === "es" ? "Tema claro" : "Light theme";
+const darkLabel = content.lang === "es" ? "Tema oscuro" : "Dark theme";
+---
+
+<header class="header">
+  <div class="header-inner">
+    <a href="#hero" class="logo-link" aria-label="Andamio Labs">
+      <Logo />
+    </a>
+
+    <nav class="nav-desktop" aria-label={content.lang === "es" ? "Navegación principal" : "Main navigation"}>
+      <ul>
+        {
+          content.header.nav.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a class="lang-switch" href={content.languageSwitch.href} hreflang={content.languageSwitch.href === "/" ? "es" : "en"}>
+        {content.languageSwitch.label}
+      </a>
+      <ThemeToggle lightLabel={lightLabel} darkLabel={darkLabel} />
+      <a class="cta" href={content.hero.ctaPrimary.href} target="_blank" rel="noopener noreferrer">
+        {content.header.ctaLabel}
+      </a>
+
+      <details class="mobile-menu">
+        <summary aria-label={content.lang === "es" ? "Abrir menú" : "Open menu"}>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </summary>
+        <nav aria-label={content.lang === "es" ? "Navegación móvil" : "Mobile navigation"}>
+          <ul>
+            {
+              content.header.nav.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: color-mix(in srgb, var(--color-background) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header-inner {
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .logo-link {
+    text-decoration: none;
+  }
+
+  .nav-desktop {
+    display: none;
+  }
+
+  .nav-desktop ul {
+    display: flex;
+    gap: 1.75rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-desktop a {
+    color: var(--color-foreground-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+
+  .nav-desktop a:hover {
+    color: var(--color-accent);
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+    color: var(--color-foreground);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .lang-switch:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .cta {
+    display: none;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+    color: var(--color-accent-foreground);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.25rem;
+    transition: background-color 0.15s ease;
+  }
+
+  .cta:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .mobile-menu {
+    position: relative;
+  }
+
+  .mobile-menu summary {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+  }
+
+  .mobile-menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-menu .bar {
+    width: 1.05rem;
+    height: 2px;
+    background-color: var(--color-foreground);
+    border-radius: 1px;
+  }
+
+  .mobile-menu[open] summary {
+    border-color: var(--color-accent);
+  }
+
+  .mobile-menu nav {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    min-width: 12rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+    box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.35);
+  }
+
+  .mobile-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-menu a {
+    display: block;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.5rem;
+    color: var(--color-foreground);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .mobile-menu a:hover {
+    background-color: var(--color-background);
+    color: var(--color-accent);
+  }
+
+  @media (min-width: 56rem) {
+    .nav-desktop {
+      display: block;
+    }
+
+    .cta {
+      display: inline-flex;
+    }
+
+    .mobile-menu {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const menus = document.querySelectorAll<HTMLDetailsElement>(".mobile-menu");
+
+  document.addEventListener("click", (event) => {
+    menus.forEach((menu) => {
+      if (menu.open && !menu.contains(event.target as Node)) {
+        menu.open = false;
+      }
+    });
+  });
+
+  menus.forEach((menu) => {
+    menu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        menu.open = false;
+      });
+    });
+  });
+</script>

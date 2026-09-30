@@ -1,0 +1,94 @@
+---
+import type { SiteContent } from "../i18n/types";
+
+interface Props {
+  content: SiteContent;
+}
+
+const { content } = Astro.props;
+---
+
+<section id="solutions" class="solutions">
+  <div class="inner">
+    <h2>{content.solutions.title}</h2>
+    <p class="intro">{content.solutions.intro}</p>
+    <ul class="grid">
+      {
+        content.solutions.items.map((item, index) => (
+          <li class="card">
+            <span class="index">{String(index + 1).padStart(2, "0")}</span>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .solutions {
+    padding: 4rem 1.25rem;
+  }
+
+  .inner {
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin: 0 0 1rem;
+    max-width: 32ch;
+  }
+
+  .intro {
+    color: var(--color-foreground-muted);
+    font-size: 1.05rem;
+    margin: 0 0 2.5rem;
+    max-width: 42ch;
+  }
+
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+
+  .card {
+    position: relative;
+    padding: 1.75rem;
+    border-radius: 1rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  .card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  .index {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-accent);
+  }
+
+  h3 {
+    font-size: 1.15rem;
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .card p {
+    margin: 0;
+    color: var(--color-foreground-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+</style>

@@ -1,0 +1,135 @@
+---
+import type { SiteContent } from "../i18n/types";
+import { contact, whatsappHref } from "../data/contact";
+
+interface Props {
+  content: SiteContent;
+}
+
+const { content } = Astro.props;
+---
+
+<section id="contact" class="contact">
+  <div class="inner">
+    <h2>{content.contact.title}</h2>
+    <p class="intro">{content.contact.intro}</p>
+
+    <div class="actions">
+      <a
+        class="whatsapp"
+        href={whatsappHref(content.contact.whatsappMessage)}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {content.contact.whatsappLabel}
+      </a>
+
+      <button type="button" class="email-copy" data-email={contact.email}>
+        <span class="email-text">{contact.email}</span>
+        <span class="copy-label">{content.contact.copyLabel}</span>
+      </button>
+      <p class="copy-status" role="status" aria-live="polite" data-copied-label={content.contact.copiedLabel}></p>
+    </div>
+
+    <p class="hours">{content.contact.hours}</p>
+  </div>
+</section>
+
+<style>
+  .contact {
+    padding: 4rem 1.25rem;
+  }
+
+  .inner {
+    max-width: 40rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    margin: 0 0 1rem;
+  }
+
+  .intro {
+    color: var(--color-foreground-muted);
+    font-size: 1.05rem;
+    margin: 0 0 2.5rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .whatsapp {
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+    color: var(--color-accent-foreground);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.9rem 2rem;
+    transition: background-color 0.15s ease;
+  }
+
+  .whatsapp:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .email-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+    background-color: transparent;
+    color: var(--color-foreground);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+
+  .email-copy:hover {
+    border-color: var(--color-accent);
+  }
+
+  .copy-label {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: var(--color-accent);
+    font-size: 0.85rem;
+  }
+
+  .copy-status {
+    min-height: 1.2rem;
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-success);
+  }
+
+  .hours {
+    color: var(--color-foreground-muted);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+</style>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>(".email-copy");
+  const status = document.querySelector<HTMLParagraphElement>(".copy-status");
+
+  button?.addEventListener("click", async () => {
+    const email = button.dataset.email ?? "";
+    try {
+      await navigator.clipboard.writeText(email);
+      if (status) status.textContent = status.dataset.copiedLabel ?? "";
+    } catch (error) {
+      if (status) status.textContent = email;
+    }
+  });
+</script>

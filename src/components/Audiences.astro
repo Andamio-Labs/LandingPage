@@ -1,0 +1,63 @@
+---
+import type { SiteContent } from "../i18n/types";
+
+interface Props {
+  content: SiteContent;
+}
+
+const { content } = Astro.props;
+---
+
+<section id="audiences" class="audiences">
+  <div class="inner">
+    <h2>{content.audiences.title}</h2>
+    <p class="intro">{content.audiences.intro}</p>
+    <ul class="chips">
+      {content.audiences.items.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .audiences {
+    padding: 4rem 1.25rem;
+    background-color: var(--color-surface);
+  }
+
+  .inner {
+    max-width: 60rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin: 0 0 1rem;
+  }
+
+  .intro {
+    color: var(--color-foreground-muted);
+    font-size: 1.05rem;
+    margin: 0 auto 2rem;
+    max-width: 40ch;
+  }
+
+  .chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .chips li {
+    padding: 0.6rem 1.25rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+</style>
