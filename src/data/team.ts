@@ -26,11 +26,15 @@ export const team: TeamMember[] = [
     name: "David Parra",
     initials: "DP",
     role: { es: "Desarrollador", en: "Developer" },
+    github: "PimPomUwU",
+    linkedin: "david-alejandro-parra-l%C3%B3pez-63176432b",
   },
   {
     id: "santiago-fajardo",
     name: "Santiago Fajardo",
     initials: "SF",
     role: { es: "Desarrollador", en: "Developer" },
+    github: "santiago123-dex",
+    linkedin: "santiago-fajardo-morales-7a304b379",
   },
 ];
