@@ -7,12 +7,12 @@ const { class: className = "" } = Astro.props;
 ---
 
 <span class={`logo ${className}`}>
-  <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-    <polygon points="32,14 46,22 32,30 18,22" class="logo-face-top"></polygon>
-    <polygon points="18,22 32,30 32,46 18,38" class="logo-face-left"></polygon>
-    <polygon points="46,22 32,30 32,46 46,38" class="logo-face-right"></polygon>
+  <svg class="mark" viewBox="-2 -2 104 120" aria-hidden="true" focusable="false">
+    <polygon class="top" points="50,0 100,29 50,58 0,29"></polygon>
+    <polygon class="left" points="0,29 50,58 50,116 0,87"></polygon>
+    <polygon class="right" points="100,29 50,58 50,116 100,87"></polygon>
   </svg>
-  <span class="logo-word">Andamio Labs</span>
+  <span class="word">Andamio Labs</span>
 </span>
 
 <style>
@@ -20,37 +20,29 @@ const { class: className = "" } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: 1.125rem;
     color: var(--color-foreground);
+    font-weight: 700;
+    font-stretch: 108%;
+    font-size: 1.075rem;
+    letter-spacing: -0.02em;
     white-space: nowrap;
   }
 
-  .logo-mark {
-    width: 1.75rem;
-    height: 1.75rem;
+  .mark {
+    width: 1.35rem;
+    height: 1.55rem;
     flex-shrink: 0;
   }
 
-  .logo-face-top {
-    fill: var(--color-accent);
-    stroke: var(--color-accent-hover);
-    stroke-width: 1.5;
-    stroke-linejoin: round;
+  .top {
+    fill: var(--c-cube-top);
   }
 
-  .logo-face-left {
-    fill: var(--color-teal-800);
-    stroke: var(--color-accent-hover);
-    stroke-width: 1.5;
-    stroke-linejoin: round;
+  .left {
+    fill: var(--c-cube-left);
   }
 
-  .logo-face-right {
-    fill: var(--color-teal-900);
-    stroke: var(--color-accent-hover);
-    stroke-width: 1.5;
-    stroke-linejoin: round;
+  .right {
+    fill: var(--c-cube-right);
   }
 </style>

@@ -27,7 +27,7 @@ function resolve(vars, rawValue) {
 }
 
 const rootVars = parseVars(extractBlock(css, ":root"));
-const darkVars = { ...rootVars, ...parseVars(extractBlock(css, '[data-theme="dark"]')) };
+const lightVars = { ...rootVars, ...parseVars(extractBlock(css, '[data-theme="light"]')) };
 
 function hexToRgb(hex) {
   const value = hex.replace("#", "");
@@ -54,17 +54,22 @@ const pairs = [
   ["texto / fondo", "c-text", "c-bg", 4.5],
   ["texto secundario / fondo", "c-text-muted", "c-bg", 4.5],
   ["texto / superficie", "c-text", "c-surface", 4.5],
+  ["texto secundario / superficie", "c-text-muted", "c-surface", 4.5],
+  ["texto secundario / superficie alta", "c-text-muted", "c-surface-high", 4.5],
   ["acento (enlace) / fondo", "c-accent", "c-bg", 4.5],
+  ["acento (enlace) / superficie", "c-accent", "c-surface", 4.5],
   ["texto sobre acento (botón)", "c-on-accent", "c-accent", 4.5],
-  ["borde / fondo", "c-border", "c-bg", 3],
-  ["éxito / fondo", "c-success", "c-bg", 4.5],
-  ["error / fondo", "c-error", "c-bg", 4.5],
+  ["borde fuerte / fondo", "c-line-strong", "c-bg", 3],
+  ["tinta / papel", "c-ink", "c-paper", 4.5],
+  ["tinta suave / papel", "c-ink-muted", "c-paper", 4.5],
+  ["éxito / superficie", "c-success", "c-surface", 4.5],
+  ["error / superficie", "c-error", "c-surface", 4.5],
 ];
 
 let failed = false;
 
-for (const themeName of ["claro", "oscuro"]) {
-  const vars = themeName === "claro" ? rootVars : darkVars;
+for (const themeName of ["oscuro", "claro"]) {
+  const vars = themeName === "oscuro" ? rootVars : lightVars;
   console.log(`\nTema ${themeName}:`);
   for (const [label, fgKey, bgKey, minRatio] of pairs) {
     const fg = resolve(vars, vars[fgKey]);
@@ -74,7 +79,7 @@ for (const themeName of ["claro", "oscuro"]) {
     if (!pass) failed = true;
     const status = pass ? "OK" : "FALLA";
     console.log(
-      `  [${status}] ${label}: ${ratio.toFixed(2)}:1 (mínimo ${minRatio}:1) — ${fg} sobre ${bg}`
+      `  [${status}] ${label}: ${ratio.toFixed(2)}:1 (mínimo ${minRatio}:1), ${fg} sobre ${bg}`
     );
   }
 }
