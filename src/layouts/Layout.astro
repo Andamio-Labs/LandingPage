@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import type { SiteContent } from "../i18n/types";
 import { contact } from "../data/contact";
+import { buildStructuredData } from "../data/structuredData";
 
 interface Props {
   content: SiteContent;
@@ -14,6 +15,7 @@ const canonicalUrl = new URL(canonicalPath, siteUrl).toString();
 const ogImageUrl = new URL("/og-image.png", siteUrl).toString();
 const ogLocale = content.lang === "es" ? "es_CO" : "en_US";
 const ogLocaleAlternate = content.lang === "es" ? "en_US" : "es_CO";
+const structuredData = JSON.stringify(buildStructuredData(content.meta.description, content.htmlLang));
 ---
 
 <!doctype html>
@@ -60,6 +62,8 @@ const ogLocaleAlternate = content.lang === "es" ? "en_US" : "es_CO";
     <link rel="alternate" hreflang="es" href={siteUrl + "/"} />
     <link rel="alternate" hreflang="en" href={siteUrl + "/en/"} />
     <link rel="alternate" hreflang="x-default" href={siteUrl + "/"} />
+
+    <script type="application/ld+json" is:inline set:html={structuredData} />
   </head>
   <body>
     <a href="#main-content" class="skip-link">{content.skipLink}</a>
