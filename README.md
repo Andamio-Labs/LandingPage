@@ -24,4 +24,4 @@ npm run build
 
 ## Sitio
 
-https://andamio-labs.pages.dev
+https://andamiolabs.pages.dev

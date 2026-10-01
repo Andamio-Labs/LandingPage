@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://andamio-labs.pages.dev/sitemap-index.xml
+Sitemap: https://andamiolabs.pages.dev/sitemap-index.xml
